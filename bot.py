@@ -387,14 +387,23 @@ def main() -> None:
         logger.error("BOT_TOKEN not set! Please configure your .env file.")
         return
 
+    # Validate BOT_TOKEN format (should be numeric:token format)
+    if not isinstance(BOT_TOKEN, str) or ":" not in BOT_TOKEN:
+        logger.error("Invalid BOT_TOKEN format! Token should be in format '123456789:ABCdefGHIjklMNOpqrsTUVwxyz'")
+        return
+
     if not HR_CHAT_ID:
         logger.warning("HR_CHAT_ID not set! Job applications won't be forwarded.")
 
     if not CMO_CHAT_ID:
         logger.warning("CMO_CHAT_ID not set! Commercial proposals won't be forwarded.")
 
-    # Create application
-    application = Application.builder().token(BOT_TOKEN).build()
+    # Create application with error handling
+    try:
+        application = Application.builder().token(BOT_TOKEN).build()
+    except Exception as e:
+        logger.error(f"Failed to create Application: {e}", exc_info=True)
+        return
 
     # Define conversation handler
     conv_handler = ConversationHandler(
@@ -445,11 +454,19 @@ def main() -> None:
     )
 
     # Add handler
-    application.add_handler(conv_handler)
+    try:
+        application.add_handler(conv_handler)
+    except Exception as e:
+        logger.error(f"Failed to add conversation handler: {e}", exc_info=True)
+        return
 
     # Start the bot
     logger.info("Bot starting...")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    try:
+        application.run_polling(allowed_updates=Update.ALL_TYPES)
+    except Exception as e:
+        logger.error(f"Bot error: {e}", exc_info=True)
+        raise
 
 
 if __name__ == "__main__":
