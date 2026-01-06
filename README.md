@@ -72,6 +72,11 @@ telegram_work_concierge/
 ├── bot.py              # Main bot logic and handlers
 ├── messages.py         # Localized messages (EN/RU/UZB)
 ├── requirements.txt    # Python dependencies
+├── runtime.txt         # Python version for deployment
+├── Procfile            # Process definition for Railway
+├── railway.json        # Railway deployment configuration
+├── Dockerfile          # Docker container definition
+├── .dockerignore       # Files to exclude from Docker build
 ├── .env.example        # Environment variables template
 ├── .env                # Your configuration (not in git)
 └── README.md           # This file
@@ -92,6 +97,36 @@ Edit `messages.py` and add translations for your language code in the `MESSAGES`
 Edit the message templates in `messages.py` to customize questions and responses.
 
 ## Deployment
+
+### Using Railway.com
+
+Railway is a modern platform for deploying applications. Follow these steps:
+
+1. **Create a Railway Account**
+   - Go to [railway.app](https://railway.app)
+   - Sign up with GitHub
+
+2. **Create a New Project**
+   - Click "New Project"
+   - Select "Deploy from GitHub repo" (recommended) or "Empty Project"
+
+3. **Configure Environment Variables**
+   - In your Railway project, go to "Variables"
+   - Add the following environment variables:
+     - `BOT_TOKEN` - Your Telegram bot token from BotFather
+     - `HR_CHAT_ID` - Chat ID of the HR team group
+     - `CMO_CHAT_ID` - Chat ID of the CMO team group
+
+4. **Deploy**
+   - If using GitHub: Railway will automatically detect the repository and deploy
+   - Railway will use the `Procfile` or `Dockerfile` for deployment
+   - The bot will start automatically
+
+5. **Monitor Logs**
+   - View logs in the Railway dashboard
+   - The bot will restart automatically on failure (configured in `railway.json`)
+
+**Note:** Railway will use Python 3.11 (specified in `runtime.txt`) to avoid compatibility issues with Python 3.13.
 
 ### Using systemd (Linux)
 Create `/etc/systemd/system/work-concierge-bot.service`:

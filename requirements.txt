@@ -1,2 +1,5 @@
+# Core Telegram Bot Framework
 python-telegram-bot==21.3
+
+# Environment Variable Management
 python-dotenv==1.0.0
